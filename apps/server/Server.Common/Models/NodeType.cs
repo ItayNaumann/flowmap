@@ -1,8 +1,8 @@
-namespace Backend.Common.Models;
+namespace Server.Common.Models;
 
 public enum NodeType
 {
-    Package,
-    Dashboard,
-    GiliTable
+	Package,
+	Dashboard,
+	GiliTable
 }
