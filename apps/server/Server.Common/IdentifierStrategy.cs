@@ -3,9 +3,11 @@
 namespace Server.Common;
 
 public class IdentifierStrategy(
-	Func<string, Node> getNodeData,
-	Func<string, IEnumerable<string>> getConnectedNodeIdentifiers)
+	Func<string, Task<Node?>> getNodeData,
+	Func<string, Task<IEnumerable<ConnectionIdentifier>>> getConnectedNodeIdentifiers)
 {
-	public Func<string, Node> GetNodeData = getNodeData;
-	public Func<string, IEnumerable<string>> GetConnectedNodeIdentifiers = getConnectedNodeIdentifiers;
+	public readonly Func<string, Task<Node?>> GetNodeData = getNodeData;
+
+	public readonly Func<string, Task<IEnumerable<ConnectionIdentifier>>> GetConnectedNodeIdentifiers =
+		getConnectedNodeIdentifiers;
 }
