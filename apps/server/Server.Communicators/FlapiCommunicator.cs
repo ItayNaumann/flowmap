@@ -1,4 +1,4 @@
-namespace Server.DAL.Communicators;
+namespace Server.Communicators;
 
 public class FlapiCommunicator
 {

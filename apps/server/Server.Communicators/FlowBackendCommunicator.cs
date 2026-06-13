@@ -1,6 +1,6 @@
 using Server.Common.Models;
 
-namespace Server.DAL.Communicators;
+namespace Server.Communicators;
 
 public class FlowBackendCommunicator
 {

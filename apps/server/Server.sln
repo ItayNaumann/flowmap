@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{4800AEFA-77F9-430F-81E1-0D07717D3083}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Dal", "Server.Dal\Server.Dal.csproj", "{EE42EC03-AD47-4AB8-9735-21E0E832D3D2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Communicators", "Server.Communicators\Server.Communicators.csproj", "{EE42EC03-AD47-4AB8-9735-21E0E832D3D2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Common", "Server.Common\Server.Common.csproj", "{B92836AA-457F-4F23-BC99-E6824C9321BC}"
 EndProject
