@@ -3,11 +3,12 @@
 namespace Server.Common;
 
 public class IdentifierStrategy(
-	Func<string, Task<Node?>> getNodeData,
-	Func<string, Task<IEnumerable<ConnectionIdentifier>>> getConnectedNodeIdentifiers)
+	Func<string, CancellationToken, Task<Node?>> getNodeData,
+	Func<string, CancellationToken, Task<IEnumerable<ConnectionIdentifier>>> getConnectedNodeIdentifiers)
 {
-	public readonly Func<string, Task<Node?>> GetNodeData = getNodeData;
+	public readonly Func<string, CancellationToken, Task<Node?>> GetNodeData = getNodeData;
 
-	public readonly Func<string, Task<IEnumerable<ConnectionIdentifier>>> GetConnectedNodeIdentifiers =
-		getConnectedNodeIdentifiers;
+	public readonly Func<string, CancellationToken, Task<IEnumerable<ConnectionIdentifier>>>
+		GetConnectedNodeIdentifiers =
+			getConnectedNodeIdentifiers;
 }

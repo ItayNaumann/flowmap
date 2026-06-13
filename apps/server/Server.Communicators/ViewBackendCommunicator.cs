@@ -4,17 +4,19 @@ namespace Server.Communicators;
 
 public class ViewBackendCommunicator
 {
-	public Node GetDashboardData(string id)
+	public Node GetDashboardData(string id, CancellationToken cancellationToken = default)
 	{
 		throw new NotImplementedException();
 	}
 
-	public IEnumerable<string> GetDashboardConnectionsIdentifiers(string dashboardId)
+	public IEnumerable<string> GetDashboardConnectionsIdentifiers(string dashboardId,
+		CancellationToken cancellationToken = default)
 	{
 		throw new NotImplementedException();
 	}
 
-	public IEnumerable<string> GetPackageConnectedDashboardsIdentifiers(string packageId)
+	public IEnumerable<string> GetPackageConnectedDashboardsIdentifiers(string packageId,
+		CancellationToken cancellationToken = default)
 	{
 		throw new NotImplementedException();
 	}
