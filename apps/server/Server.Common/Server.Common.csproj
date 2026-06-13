@@ -1,9 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
+	<ItemGroup>
+		<Reference Include="System.IO.Pipelines">
+			<HintPath>C:\Users\itayn\.dotnet\packs\Microsoft.AspNetCore.App.Ref\8.0.28\ref\net8.0\System.IO.Pipelines.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="JsonPath.Net" Version="3.0.2"/>
+	</ItemGroup>
 </Project>
