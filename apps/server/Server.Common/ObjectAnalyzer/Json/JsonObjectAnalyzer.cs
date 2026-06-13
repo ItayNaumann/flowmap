@@ -24,11 +24,9 @@ public static class JsonObjectAnalyzer
 	// );
 
 	public static async IAsyncEnumerable<ExtractedData> ExecuteAsync(
-		HttpClient client,
+		IJsonStreamProvider streamProvider,
 		List<CheckItem> checkItems,
-		ExtractedData extractedFields,
-		string url,
-		string targetPath)
+		ExtractedData extractedFields)
 	{
 		var semaphore = new SemaphoreSlim(10, 10);
 		var tasks = new List<Task>();
@@ -43,8 +41,7 @@ public static class JsonObjectAnalyzer
 		{
 			try
 			{
-				await foreach (var item in
-				               JsonPathFinderHttpStreamer.StreamFromPathAsync<JsonNode>(client, url, targetPath))
+				await foreach (var item in streamProvider.ProvideStream<JsonNode>(CancellationToken.None))
 				{
 					var task = Task.Run(async () =>
 					{

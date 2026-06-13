@@ -2,13 +2,13 @@ using System.Buffers;
 using System.IO.Pipelines;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using Server.Common.ObjectAnalyzer.Json.Models;
 
 namespace Server.Common.ObjectAnalyzer.Json;
 
-public static class JsonPathFinderHttpStreamer
+public class HttpJsonStreamProvider(HttpClient httpClient, string url, string targetPath) : IJsonStreamProvider
 {
-	public static async IAsyncEnumerable<T> StreamFromPathAsync<T>(HttpClient httpClient, string url, string targetPath,
-		[EnumeratorCancellation] CancellationToken token = default)
+	public async IAsyncEnumerable<T> ProvideStream<T>([EnumeratorCancellation] CancellationToken token = default)
 	{
 		string normalizedTarget = targetPath.TrimStart('$').TrimStart('.');
 
