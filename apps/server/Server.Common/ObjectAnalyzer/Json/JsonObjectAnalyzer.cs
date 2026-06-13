@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Text.Json.Nodes;
 using System.Threading.Channels;
 using Json.Path;
@@ -26,7 +27,7 @@ public static class JsonObjectAnalyzer
 	public static async IAsyncEnumerable<ExtractedData> ExecuteAsync(
 		IJsonStreamProvider streamProvider,
 		List<CheckItem> checkItems,
-		ExtractedData extractedFields)
+		ExtractedData extractedFields, [EnumeratorCancellation] CancellationToken token) // Might need to split tokens?
 	{
 		var semaphore = new SemaphoreSlim(10, 10);
 		var tasks = new List<Task>();
@@ -41,25 +42,25 @@ public static class JsonObjectAnalyzer
 		{
 			try
 			{
-				await foreach (var item in streamProvider.ProvideStream<JsonNode>(CancellationToken.None))
+				await foreach (var item in streamProvider.ProvideStream<JsonNode>(token))
 				{
 					var task = Task.Run(async () =>
 					{
-						await semaphore.WaitAsync();
+						await semaphore.WaitAsync(token);
 
 						try
 						{
 							var result = await ProcessItemAsync(item, checkItems, extractedFields);
 							if (result != null)
 							{
-								await channel.Writer.WriteAsync(result);
+								await channel.Writer.WriteAsync(result, token);
 							}
 						}
 						finally
 						{
 							semaphore.Release();
 						}
-					});
+					}, token);
 
 					tasks.Add(task);
 					tasks.RemoveAll(t => t.IsCompleted);
@@ -71,9 +72,9 @@ public static class JsonObjectAnalyzer
 			{
 				channel.Writer.Complete();
 			}
-		});
+		}, token);
 
-		await foreach (var extractedResult in channel.Reader.ReadAllAsync())
+		await foreach (var extractedResult in channel.Reader.ReadAllAsync(token))
 		{
 			yield return extractedResult;
 		}
