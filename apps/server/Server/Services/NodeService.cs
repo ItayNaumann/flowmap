@@ -1,5 +1,6 @@
 using Server.Common;
 using Server.Common.Models;
+using Server.Common.Models.Extensions;
 
 namespace Server.Services;
 

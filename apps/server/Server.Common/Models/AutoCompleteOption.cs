@@ -1,3 +1,6 @@
 namespace Server.Common.Models;
 
-public record AutoCompleteOption(string Identifier, string DisplayName, NodeType Type);
+public record AutoCompleteOption(string Identifier, NodeType Type)
+{
+	public string? DisplayName { get; init; }
+}
