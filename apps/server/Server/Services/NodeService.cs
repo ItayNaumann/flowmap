@@ -9,10 +9,9 @@ public class NodeService
 		string id,
 		IServiceProvider sp)
 	{
-		IEnumerable<NodeType> potentialNodeTypes = await DetermineNodeTypeAsync(id);
+		var potentialNodeTypes = await DetermineNodeTypeAsync(id);
 
-		IEnumerable<NodeType> nodeTypes = potentialNodeTypes.ToList();
-		var potentialNodes = nodeTypes.Select(nodeType => GetNode(id, nodeType, sp)).ToList();
+		var potentialNodes = potentialNodeTypes.Select(nodeType => GetNode(id, nodeType, sp)).ToList();
 
 		await Task.WhenAll(potentialNodes);
 
@@ -54,29 +53,13 @@ public class NodeService
 
 		foreach (var connectionIdentifier in connectionIdentifiers)
 		{
-			if (connectionIdentifier.IsAbove)
-			{
-				aboveConnections.Add(GetNodeData(id, nodeType, sp));
-			}
-			else
-			{
-				belowConnections.Add(GetNodeData(id, nodeType, sp));
-			}
+			(connectionIdentifier.IsAbove ? aboveConnections : belowConnections).Add(GetNodeData(id, nodeType, sp));
 		}
 
 		await Task.WhenAll(aboveConnections.Concat(belowConnections));
 
-		IEnumerable<Node> nonNullAbove = aboveConnections
-			.Select(t => t.Result)
-			.Where(node => node != null)
-			.ToList()!;
-
-		IEnumerable<Node> nonNullBelow = belowConnections
-			.Select(t => t.Result)
-			.Where(node => node != null)
-			.ToList()!;
-
-		return new NodeConnections(nonNullAbove, nonNullBelow);
+		return new NodeConnections(Above: aboveConnections.Select(t => t.Result).OfType<Node>(),
+			Below: belowConnections.Select(t => t.Result).OfType<Node>());
 	}
 
 
