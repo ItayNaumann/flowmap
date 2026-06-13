@@ -2,13 +2,6 @@
 
 namespace Server.Common;
 
-public class IdentifierStrategy(
-	Func<string, CancellationToken, Task<Node?>> getNodeData,
-	Func<string, CancellationToken, Task<IEnumerable<ConnectionIdentifier>>> getConnectedNodeIdentifiers)
-{
-	public readonly Func<string, CancellationToken, Task<Node?>> GetNodeData = getNodeData;
-
-	public readonly Func<string, CancellationToken, Task<IEnumerable<ConnectionIdentifier>>>
-		GetConnectedNodeIdentifiers =
-			getConnectedNodeIdentifiers;
-}
+public record IdentifierStrategy(
+	Func<string, CancellationToken, Task<Node?>> GetNodeData,
+	Func<string, CancellationToken, Task<IEnumerable<ConnectionIdentifier>>> GetConnectedNodeIdentifiers);
