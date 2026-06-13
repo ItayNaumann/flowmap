@@ -5,34 +5,41 @@ namespace Server.Services;
 
 public class NodeService
 {
-	public async Task<KeyValuePair<IEnumerable<Node?>, IEnumerable<NodeConnections>>> GetUnknownNodeWithConnections(
+	public async Task<IEnumerable<(Node?, NodeConnections?)>> GetUnknownNode(
 		string id,
 		IServiceProvider sp)
 	{
 		IEnumerable<NodeType> potentialNodeTypes = await DetermineNodeTypeAsync(id);
 
 		IEnumerable<NodeType> nodeTypes = potentialNodeTypes.ToList();
-		var potentialNodes = nodeTypes.Select(nodeType => GetNodeData(id, nodeType, sp)).ToList();
-		var potentialConnections = nodeTypes.Select(nodeType => GetNodeConnections(id, nodeType, sp)).ToList();
+		var potentialNodes = nodeTypes.Select(nodeType => GetNode(id, nodeType, sp)).ToList();
 
-		await Task.WhenAll(potentialNodes.Cast<Task>().Concat(potentialConnections));
+		await Task.WhenAll(potentialNodes);
 
 		var nodesResult = potentialNodes.Select(input => input.Result).ToList();
 
-		IEnumerable<NodeConnections> connectionsResult = potentialConnections
-			.Select(input => input.Result)
-			.Where(conn => conn != null)
-			.ToList()!;
 
-		return new(nodesResult, connectionsResult);
+		return nodesResult;
 	}
 
-	public async Task<Node?> GetNodeData(string id, NodeType nodeType, IServiceProvider sp)
+	public async Task<(Node?, NodeConnections?)> GetNode(string id, NodeType nodeType,
+		IServiceProvider sp)
+	{
+		var nodeData = GetNodeData(id, nodeType, sp);
+		var nodeConnections = GetNodeConnections(id, nodeType, sp);
+
+		await Task.WhenAll(nodeData, nodeConnections);
+
+		return (nodeData.Result, nodeConnections.Result);
+	}
+
+
+	private async Task<Node?> GetNodeData(string id, NodeType nodeType, IServiceProvider sp)
 	{
 		var strategy = sp.GetKeyedService<IdentifierStrategy>(nodeType);
 		if (strategy == null) return null;
 
-		return await strategy.GetNodeData(id);
+		return await strategy.GetNodeData(id, CancellationToken.None);
 	}
 
 	public async Task<NodeConnections?> GetNodeConnections(string id, NodeType nodeType, IServiceProvider sp)
@@ -40,7 +47,7 @@ public class NodeService
 		var strategy = sp.GetKeyedService<IdentifierStrategy>(nodeType);
 		if (strategy == null) return null;
 
-		var connectionIdentifiers = await strategy.GetConnectedNodeIdentifiers(id);
+		var connectionIdentifiers = await strategy.GetConnectedNodeIdentifiers(id, CancellationToken.None);
 
 		var aboveConnections = new List<Task<Node?>>();
 		var belowConnections = new List<Task<Node?>>();
